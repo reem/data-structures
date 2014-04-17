@@ -23,42 +23,49 @@ BitArray.prototype.length = function () {
   return this._storage.length;
 };
 
+BitArray.prototype.used = function () {
+  return _.reduce(this._storage, function (a, b) { return a + b; });
+};
+
 var BloomFilter = function (initSize, numHashFunctions) {
-  this.items = [];
-  this.storage = new BitArray(initSize || 8);
-  this.hashFunctions = [];
+  this._items = [];
+  this._storage = new BitArray(initSize || 8);
+  this._hashFunctions = [];
   for (var i = 0; i < (numHashFunctions || 4); i++) {
-    this.hashFunctions.push(
-      generateHashFunction(this.storage.length));
+    this._hashFunctions.push(
+      generateHashFunction(this._storage.length));
   }
   this.load = 0;
 };
 
 BloomFilter.prototype.insert = function (value){
-  this.items.push(value);
-  _.each(reverseMap(this.hashFunctions, value), function(index) {
-    this.storage.activate(index);
+  this._items.push(value);
+  _.each(reverseMap(this._hashFunctions, value), function(index) {
+    this._storage.activate(index);
   }, this);
-  if ((++this.load * this.hashFunctions.length) /
-         this.storage.length() > 0.75) {
+  if ((++this.load * this._hashFunctions.length) /
+         this._storage.length() > 0.75) {
     this.resize();
   }
   return this;
 };
 
+BloomFilter.prototype.insertMany = function (values) {
+  return _.reduce(values, function (filter, value) {
+    return filter.insert(value);
+  }, this);
+};
+
 BloomFilter.prototype.contains = function (value){
-  return _.every(reverseMap(this.hashFunctions, value), function(index){
-    return this.storage.get(index);
+  return _.every(reverseMap(this._hashFunctions, value), function(index){
+    return this._storage.get(index);
   }, this);
 };
 
 BloomFilter.prototype.resize = function () {
-  var newFilter = new BloomFilter(this.storage.length() * 2,
-    Math.floor(((2 * this.storage.length()) / this.load) * 0.63));
-  _.each(this.items, function (item) {
-    newFilter.insert(item);
-  });
-  _.extend(this, newFilter);
+  var newFilter = new BloomFilter(this._storage.length() * 2,
+    Math.floor(((2 * this._storage.length()) / this.load) * 0.63));
+  _.extend(this, newFilter.insertMany(this._items));
 };
 
 var reverseMap = function (funcs, value) {
@@ -85,5 +92,3 @@ var generateHashFunction = function (maxIndex) {
     return Math.floor(number / randomPart) % maxIndex;
   };
 };
-
-

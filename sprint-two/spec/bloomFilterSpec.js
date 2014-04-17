@@ -7,10 +7,11 @@ describe("bitarray", function() {
     bitarray = new BitArray(10);
   });
 
-  it("should have methods named 'activate', 'get' and 'deactivate'", function() {
+  it("should have methods named 'activate', 'get', 'used' and 'deactivate'", function() {
     expect(bitarray.activate).to.be.a('function');
     expect(bitarray.deactivate).to.be.a('function');
     expect(bitarray.get).to.be.a('function');
+    expect(bitarray.used).to.be.a('function');
   });
 
   it("should properly set a value to 1", function () {
@@ -20,6 +21,8 @@ describe("bitarray", function() {
   it("should properly set a value to 0" , function () {
     expect(bitarray.activate(3).deactivate(3).get(3)).to.equal(0);
   });
+
+
 });
 
 describe("bloom filter", function () {
@@ -51,7 +54,7 @@ describe("bloom filter", function () {
     for (var i = 0; i < people.length; i++){
       bloomFilter.insert(people[i]);
     }
-    expect(bloomFilter.storage.length()).to.equal(64);
+    expect(bloomFilter._storage.length()).to.equal(64);
   });
 });
 
