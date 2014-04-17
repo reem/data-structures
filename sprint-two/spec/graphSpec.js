@@ -1,3 +1,4 @@
+
 var assert = chai.assert;
 
 describe("graph", function() {
@@ -28,15 +29,9 @@ describe("graph", function() {
     assert.isFalse(graph.contains("puppies"));
   });
 
-  it("should automatically create an edge between two nodes if there is only one node in the graph", function() {
-    graph.addNode("puppies");
-    graph.addNode("kittens");
-    assert.isTrue(graph.getEdge("puppies", "kittens"));
-  });
-
   it("should create edges between two nodes", function() {
     graph.addNode("puppies");
-    graph.addNode("kittens");
+    graph.addNode("kittens", "puppies");
     graph.addNode("penguins", "puppies");
     assert.isTrue(graph.getEdge("penguins", "puppies"));
     assert.isFalse(graph.getEdge("penguins", "kittens"));
@@ -44,7 +39,7 @@ describe("graph", function() {
 
   it("should remove edges between nodes", function() {
     graph.addNode("apples");
-    graph.addNode("bananas");
+    graph.addNode("bananas", "apples");
     graph.addNode("satsumas", "bananas");
     graph.addEdge("satsumas", "apples")
     graph.removeEdge("apples", "bananas")
@@ -53,7 +48,7 @@ describe("graph", function() {
 
   it("should remove nodes without any edges", function() {
     graph.addNode("jacket");
-    graph.addNode("hat");
+    graph.addNode("hat", "jacket");
     graph.removeEdge("jacket", "hat");
     assert.isFalse(graph.contains("hat"));
     assert.isFalse(graph.contains("jacket"));
