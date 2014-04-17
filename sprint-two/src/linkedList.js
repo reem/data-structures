@@ -1,16 +1,12 @@
 var makeLinkedList = function() {
-  var list = {};
-  list.head = null;
-  list.tail = null;
+  var list = { head: null, tail: null };
 
   list.addToTail = function(value) {
     if (list.tail === null) {
-      list.head = makeNode(value);
-      list.tail = list.head;
+      list.tail = list.head = makeNode(value);
     } else {
-      list.tail.next = makeNode(value)
-      list.tail = list.tail.next;
-    }
+      list.tail = list.tail.next = makeNode(value);
+    } return list;
   };
 
   list.removeHead = function() {
