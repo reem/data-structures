@@ -1,5 +1,5 @@
-var HashTable = function(maxLoadFactor){
-  this._limit = 8;
+var HashTable = function(maxLoadFactor, limit){
+  this._limit = limit || 8;
   this._storage = makeLimitedArray(this._limit);
   this._maxLoadFactor = maxLoadFactor || 0.75; // 0 is nonsense.
   this._currentLoad = 0;
@@ -21,6 +21,9 @@ HashTable.prototype.insert = function (k, v) {
     this._storage.set(i, [new HashEntry(k, v)]);
   }
   this._currentLoad++;
+  if (this._currentLoad / this._limit > this._maxLoadFactor) {
+    this.resize(true);
+  }
 };
 
 HashTable.prototype.retrieve = function (k) {
@@ -48,15 +51,33 @@ HashTable.prototype.remove = function (k) {
   _.each(this._storage.get(i), function (entry, index, arr) {
     if(entry.key === k){
       arr.splice(index, 1);
+      this._currentLoad--;
     }
   });
   if (this._storage.get(i).length === 0) {
     this._storage.set(i, undefined);
   }
+  if (this._currentLoad / this._limit < (this._maxLoadFactor / 2)) {
+    this.resize(false);
+  }
 };
 
-HashTable.prototype.resize = function () {
-
+HashTable.prototype.resize = function (increase) {
+  var newTable;
+  if (increase) {
+    newTable = new HashTable(this._maxLoadFactor, this._limit * 2);
+  } else {
+    newTable = new HashTable(this._maxLoadFactor, Math.floor(this._limit / 2));
+  }
+  this._storage.each(function (entries) {
+    _.each(entries, function (entry) {
+      newTable.insert(entry.key, entry.value);
+    });
+  });
+  this._maxLoadFactor = newTable._maxLoadFactor;
+  this._storage = newTable._storage;
+  this._currentLoad = newTable._currentLoad;
+  this._limit = newTable._limit;
 };
 
 ///// HashEntry
