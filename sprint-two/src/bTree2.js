@@ -17,16 +17,6 @@ var isFull = function isFull(node) {
   return node.n === 2 * node.arity - 1;
 };
 
-var findIndex = function findIndex(arr, key) {
-  var index = 0;
-  _.each(arr, function (val) {
-    if (key > val) {
-      index++;
-    }
-  });
-  return index;
-};
-
 BTree.prototype.insert = function BTreeInsert(key) {
   if (isFull(this.root)) {
     var s = new BTreeNode(false, this.arity);
@@ -35,26 +25,6 @@ BTree.prototype.insert = function BTreeInsert(key) {
     this.root._splitChild(0); // this.root.keys.push(promoted_value_from_child)
   }
   this.root._insertNotFull(key);
-};
-
-BTree.prototype.contains = function BTreeContains(key) {
-  return this.find(key) !== null;
-};
-
-BTree.prototype.find = function BTreeFind(key) {
-  // Returns either null or a value that compares equal to the key.
-  return this.root.find(key);
-};
-
-BTreeNode.prototype.find = function BTreeNodeFind(key) {
-  if (_.contains(this.keys, key)) {
-    return key;
-  } else if (this.leaf) {
-    return null;
-  } else {
-    var childIndex = findIndex(this.keys, key);
-    return this.child[childIndex].find(key);
-  }
 };
 
 BTreeNode.prototype._splitChild = function BTreeNodeSplitChild(childIndex) {
@@ -71,6 +41,16 @@ BTreeNode.prototype._splitChild = function BTreeNodeSplitChild(childIndex) {
   this.children.splice(childIndex+1, 0, sibling);
   this.keys.splice(childIndex, 0, child.keys[child.arity]);
   this.n++;
+};
+
+var findIndex = function findIndex(arr, key) {
+  var index = 0;
+  _.each(arr, function (val) {
+    if (key > val) {
+      index++;
+    }
+  });
+  return index;
 };
 
 BTreeNode.prototype._insertNotFull = function BTreeNodeInsertNotFull(key) {
