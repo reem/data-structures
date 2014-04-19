@@ -6,7 +6,7 @@ describe("b-tree", function () {
   var stuff = [];
   var min = 0;
   var max = 100;
-  var size = 100;
+  var size = 1000;
   for (var i = 0; i < size; i++) {
     stuff.push(Math.floor(Math.random()*(max - min + 1) + min));
   }

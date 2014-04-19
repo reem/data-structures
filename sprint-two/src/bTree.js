@@ -1,11 +1,11 @@
 var _ = _;
 
-var BTreeNode = function BTreeNodeConstructor(leaf, t) {
+var BTreeNode = function BTreeNodeConstructor(leaf, arity) {
   this.leaf = leaf;
   this.n = 0;
   this.keys = [];
   this.children = [];
-  this.t = t;
+  this.arity = arity;
 };
 
 var BTree = function BTreeConstructor(arity) {
@@ -30,8 +30,9 @@ var findIndex = function findIndex(arr, key) {
 BTree.prototype.insert = function BTreeInsert(key) {
   if (isFull(this.root)) {
     var s = new BTreeNode(false, this.arity);
+    var r = this.root;
     this.root = s;
-    this.root.children[0] = this.root; // this.root.keys = []
+    this.root.children[0] = r; // this.root.keys = []
     this.root._splitChild(0); // this.root.keys.push(promoted_value_from_child)
   }
   this.root._insertNotFull(key);
@@ -53,7 +54,7 @@ BTreeNode.prototype.find = function BTreeNodeFind(key) {
     return null;
   } else {
     var childIndex = findIndex(this.keys, key);
-    return this.child[childIndex].find(key);
+    return this.children[childIndex].find(key);
   }
 };
 
