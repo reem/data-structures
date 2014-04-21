@@ -35,7 +35,6 @@ describe("bloom filter", function () {
   it("should have methods named: insert, contains, resize", function(){
     expect(bloomFilter.insert).to.be.a('function');
     expect(bloomFilter.contains).to.be.a('function');
-    expect(bloomFilter.resize).to.be.a('function');
   });
 
   it("should add values with insert", function(){
@@ -47,14 +46,6 @@ describe("bloom filter", function () {
     expect(bloomFilter.insert(6).insert(5).insert(4).contains(4)).to.equal(true);
     expect(bloomFilter.contains(5)).to.equal(true);
     expect(bloomFilter.contains(6)).to.equal(true);
-  });
-
-  it("should double in size when needed", function() {
-    var people = ["Steven", "Tyler", "Joe", "Fred", "Bob"];
-    for (var i = 0; i < people.length; i++){
-      bloomFilter.insert(people[i]);
-    }
-    expect(bloomFilter._storage.length()).to.equal(64);
   });
 });
 
