@@ -1,17 +1,14 @@
-var makeTree = function(value){
-  var newTree = Object.create(treeMethods);
-  newTree.value = value;
-  newTree.children = [];
-  return newTree;
+var Tree = function(value){
+  // Basic Tree structure.
+  this.value = value;
+  this.children = [];
 };
 
-var treeMethods = {};
-
-treeMethods.addChild = function(value){
-  this.children.push(makeTree(value));
+Tree.prototype.addChild = function(value){
+  this.children.push(new Tree(value));
 };
 
-treeMethods.contains = function(target){
+Tree.prototype.contains = function(target){
   if (this.value === target){
     return true;
   }
@@ -19,15 +16,7 @@ treeMethods.contains = function(target){
     return false;
   }
 
-  return some(this.children, function(child){
+  return _.some(this.children, function(child){
     return child.contains(target);
   });
 };
-
-var some = function(collection, test){
-  var result = false;
-  for (var i = 0; i < collection.length; i++){
-    result = result || test(collection[i]);
-  }
-  return result;
-}
