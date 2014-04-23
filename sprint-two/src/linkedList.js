@@ -1,38 +1,34 @@
-var makeLinkedList = function() {
-  var list = { head: null, tail: null };
-
-  list.addToTail = function(value) {
-    if (list.tail === null) {
-      list.tail = list.head = makeNode(value);
-    } else {
-      list.tail = list.tail.next = makeNode(value);
-    } return list;
-  };
-
-  list.removeHead = function() {
-    var returnVal = list.head.value;
-    list.head = list.head.next;
-    if (list.head === null) {
-      list.tail = null;
-    }
-    return returnVal;
-  };
-
-  list.contains = function(target, node) {
-    if (node === null) {
-      return false;
-    }
-    node = node || list.head;
-    return node.value === target || list.contains(target, node.next);
-  };
-
-  return list;
+var LinkedList = function() {
+  this.head = null;
+  this.tail = null;
 };
 
-var makeNode = function(value){
-  var node = {};
-  node.value = value;
-  node.next = null;
+LinkedList.prototype.addToTail = function(value) {
+  if (this.tail === null) {
+    this.tail = this.head = new ListNode(value);
+  } else {
+    this.tail = this.tail.next = new ListNode(value);
+  } return this;
+};
 
-  return node;
+LinkedList.prototype.removeHead = function() {
+  var returnVal = this.head.value;
+  this.head = this.head.next;
+  if (this.head === null) {
+    this.tail = null;
+  }
+  return returnVal;
+};
+
+LinkedList.prototype.contains = function(target, node) {
+  if (node === null) {
+    return false;
+  }
+  node = node || this.head;
+  return node.value === target || this.contains(target, node.next);
+};
+
+var ListNode = function(value){
+  this.value = value;
+  this.next = null;
 };
