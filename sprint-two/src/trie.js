@@ -44,7 +44,7 @@ Trie.prototype.stringsFromPrefix = function (prefix) {
   // Just a quick sample application of a trie.
   return _.reduce(this.children, function (result, child, chr) {
     if (chr === prefix[0]) {
-      return result.concat(child.stringsFromPrefix);
+      return result.concat(child.stringsFromPrefix(prefix.slice(1)));
     } else {
       return result;
     }
